@@ -1,14 +1,15 @@
-﻿using static MethodBox.SimpleCqSDK.Utils.AccountJson;
+﻿using System.Reflection;
+using System.Text.Json;
+using static MethodBox.SimpleCqSDK.Utils.AccountJson;
 
 namespace MethodBox.SimpleCqSDK.BasicApis
 {
-    public class Account
+    public static class Account
     {
         /// <summary>
         /// 获取机器人的基本信息。
         /// </summary>
         /// <param name="ipAddress">建立的CQHttp服务的IP地址</param>
-        /// <returns>一个元组，内容分别为QQ号和昵称。</returns>
         public static (long,string) GetAccountProfile(string ipAddress)
         {
 #if NET6_0_OR_GREATER
@@ -16,18 +17,20 @@ namespace MethodBox.SimpleCqSDK.BasicApis
 #endif
             var uri = $"{ipAddress}/get_login_info";
             var result = Helpers.HttpHelper.Post(uri,new Dictionary<string, string>());
-            var jsonInstance = System.Text.Json.JsonSerializer.Deserialize<Utils.AccountJson.UserInfo>
+            var jsonInstance = System.Text.Json.JsonSerializer.Deserialize<Utils.BasicJson>
                 (result)??throw new Framework.Exceptions.DataEmptyException("返回数据为空");
-            return (jsonInstance.user_id, jsonInstance.nickname);
+            
+            return (((UserInfo)jsonInstance.data).user_id, 
+                ((UserInfo)jsonInstance.data).nickname);
         }
 
         /// <summary>
-        /// 设置登录号资料
+        /// 设置登录号资料。
         /// </summary>
         /// <inheritdoc cref="GetAccountProfile"/>
         /// <param name="ipAddress"></param>
         /// <param name="profile">用户资料类，包含用户的全部资料</param>
-        public void SetAccountProfile(string ipAddress,UserProfile profile)
+        public static void SetAccountProfile(string ipAddress,UserProfile profile)
         {
 #if NET6_0_OR_GREATER
             ArgumentNullException.ThrowIfNull(ipAddress);
@@ -39,15 +42,72 @@ namespace MethodBox.SimpleCqSDK.BasicApis
         }
 
         /// <summary>
-        /// 获取在线机型
+        /// 获取在线机型。
         /// </summary>
         /// <inheritdoc cref="GetAccountProfile"/>
         /// <param name="ipAddress"></param>
         /// <param name="model">机型名称</param>
-        /// <returns></returns>
-        public (string, bool) GetModelShow(string ipAddress, string model)
+        /// <returns>一个列表，其中每一项都是一个元组，其中分别为机型名称和和是否需付费信息。</returns>
+        public static List<(string, bool)> GetModelShow(string ipAddress, string model)
         {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(ipAddress);
+            ArgumentNullException.ThrowIfNull(model);
+#endif
+            var uri = $"{ipAddress}/_get_model_show";
+            var postDictionary = new Dictionary<string, string>
+                { { "model", model } };
+            var result = Helpers.HttpHelper.Post(uri, postDictionary);
+            var jsonInstance = System.Text.Json.JsonSerializer.Deserialize<Utils.BasicJson>
+                (result)??throw new Framework.Exceptions.DataEmptyException("返回数据为空");
+            var variants = ((PhoneTypeInfo)jsonInstance.data).variants;
 
+            return variants.Select(
+                tuple => (tuple.model_show, tuple.need_pay)).ToList();
+        }
+
+        /// <summary>
+        /// 设置登录号资料。
+        /// </summary>
+        /// <inheritdoc cref="GetModelShow"/>
+        /// <param name="ipAddress"></param>
+        /// <param name="model"></param>
+        /// <param name="modelShow">机型细化名称</param>
+        public static void SetModelShow(string ipAddress, string model,string modelShow)
+        {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(ipAddress);
+            ArgumentNullException.ThrowIfNull(model);
+            ArgumentNullException.ThrowIfNull(modelShow);
+#endif
+            var uri = $"{ipAddress}/_set_model_show";
+            var postDictionary = new Dictionary<string, string>
+                { { "model", model },{"model_show" , modelShow} };
+            Helpers.HttpHelper.Post(uri,postDictionary);
+        }
+
+        /// <summary>
+        /// 获取当前账号在线客户端列表。
+        /// </summary>
+        /// <inheritdoc cref="GetAccountProfile"/>
+        /// <param name="ipAddress"></param>
+        /// <param name="noCache">是否无视缓存（默认为否）</param>
+        /// <returns>在线客户端列表。</returns>
+        public static Device[] GetOnlineClients(string ipAddress, bool noCache = false)
+        {
+#if NET6_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(ipAddress);
+#endif
+            var uri = $"{ipAddress}/get_online_clients";
+            CacheSettings settings = new()
+            {
+                no_cache = noCache
+            };
+            var result = Helpers.HttpHelper.Post(JsonSerializer.Serialize(settings),uri);
+            var jsonInstance = System.Text.Json.JsonSerializer.Deserialize<Utils.BasicJson>
+                (result)??throw new Framework.Exceptions.DataEmptyException("返回数据为空");
+            
+            return ((ClientsInfo)jsonInstance.data).clients;
         }
     }
 }

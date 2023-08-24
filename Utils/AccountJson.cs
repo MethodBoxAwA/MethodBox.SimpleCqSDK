@@ -40,5 +40,48 @@ namespace MethodBox.SimpleCqSDK.Utils
             /// </summary>
             public string personal_note { get; set; } = "myNote";
         }
+
+        public class PhoneTypeInfo
+        {
+            public Variants[] variants { get; set; } = Array.Empty<Variants>();
+        }
+
+        public class Variants
+        {
+            /// <summary>
+            /// 机型名称
+            /// </summary>
+            public string model_show { get; set; } = "model_show";
+            /// <summary>
+            /// 是否需要付费
+            /// </summary>
+            public bool need_pay { get; set; } = true;
+        }
+
+        public class ClientsInfo
+        {
+            public Device[] clients { get; set; } = Array.Empty<Device>();
+        }
+
+        public class Device
+        {
+            /// <summary>
+            /// 客户端ID
+            /// </summary>
+            public long app_id { get; set; } = 1919810;
+            /// <summary>
+            /// 设备名称
+            /// </summary>
+            public string device_name = "Homoの手机";
+            /// <summary>
+            /// 设备类型
+            /// </summary>
+            private string device_kind = "哼哼哼";
+        }
+
+        internal class CacheSettings
+        {
+            public bool no_cache { get; set; } = false;
+        }
     }
 }

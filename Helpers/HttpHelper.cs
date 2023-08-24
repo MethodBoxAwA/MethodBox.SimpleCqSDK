@@ -28,8 +28,8 @@ namespace MethodBox.SimpleCqSDK.Helpers
             foreach (var item in dic)
             {
                 if (i > 0)
-                    builder.Append("&");
-                builder.AppendFormat("{0}={1}", item.Key, item.Value);
+                    builder.Append('&');
+                builder.Append($"{item.Key}={item.Value}");
                 i++;
             }
 
