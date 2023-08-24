@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.33808.371
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MethodBox.SimpleCqSDK", "MethodBox.SimpleCqSDK.csproj", "{6C544EB8-6C78-491D-A5B4-0CD13A355D09}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C544EB8-6C78-491D-A5B4-0CD13A355D09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C544EB8-6C78-491D-A5B4-0CD13A355D09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C544EB8-6C78-491D-A5B4-0CD13A355D09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C544EB8-6C78-491D-A5B4-0CD13A355D09}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2514E064-1E99-4877-990B-72CC3F2C6469}
+	EndGlobalSection
+EndGlobal
