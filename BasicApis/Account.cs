@@ -7,7 +7,7 @@ namespace MethodBox.SimpleCqSDK.BasicApis
         /// <summary>
         /// 获取机器人的基本信息。
         /// </summary>
-        /// <param name="ipAddress">建立的CQHttp的IPt地址</param>
+        /// <param name="ipAddress">建立的CQHttp服务的IP地址</param>
         /// <returns>一个元组，内容分别为QQ号和昵称。</returns>
         public static (long,string) GetAccountProfile(string ipAddress)
         {
@@ -21,6 +21,12 @@ namespace MethodBox.SimpleCqSDK.BasicApis
             return (jsonInstance.user_id, jsonInstance.nickname);
         }
 
+        /// <summary>
+        /// 设置登录号资料
+        /// </summary>
+        /// <inheritdoc cref="GetAccountProfile"/>
+        /// <param name="ipAddress"></param>
+        /// <param name="profile">用户资料类，包含用户的全部资料</param>
         public void SetAccountProfile(string ipAddress,UserProfile profile)
         {
 #if NET6_0_OR_GREATER
@@ -32,6 +38,16 @@ namespace MethodBox.SimpleCqSDK.BasicApis
             Helpers.HttpHelper.Post(jsonInstance, uri);
         }
 
+        /// <summary>
+        /// 获取在线机型
+        /// </summary>
+        /// <inheritdoc cref="GetAccountProfile"/>
+        /// <param name="ipAddress"></param>
+        /// <param name="model">机型名称</param>
+        /// <returns></returns>
+        public (string, bool) GetModelShow(string ipAddress, string model)
+        {
 
+        }
     }
 }
