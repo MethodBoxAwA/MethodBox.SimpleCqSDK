@@ -89,7 +89,7 @@ namespace MethodBox.SimpleCqSDK.Utils
         public class ClientsInfo
         {
             [JsonPropertyName("clients")]
-            public Device[] Clients { get; set; } = Array.Empty<Device>();
+            public Device[]? Clients { get; set; } = Array.Empty<Device>();
         }
 
         /// <summary>
