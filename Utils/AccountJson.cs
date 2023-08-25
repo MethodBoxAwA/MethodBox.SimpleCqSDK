@@ -2,86 +2,130 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MethodBox.SimpleCqSDK.Utils
 {
+    /// <summary>
+    /// 用于表示用户相关JSON实例结构的导出类。
+    /// </summary>
     public class AccountJson
     {
+        /// <summary>
+        /// 用于表示机器人基本信息的类。
+        /// </summary>
         internal class UserInfo:Basics.UserBasic{}
 
         /// <summary>
         /// 用于表示设置用户资料时的相应类。
         /// </summary>
+        [Serializable]
         public class UserProfile
         {
             /// <summary>
             /// 名称
             /// </summary>
-            public string nickname { get; set; } = "myName";
+            [JsonPropertyName("nickname")]
+            public string NickName { get; set; } = "myName";
 
             /// <summary>
             /// 公司
             /// </summary>
-            public string company { get; set; } = "myCompany";
+            [JsonPropertyName("company")]
+            public string Company { get; set; } = "myCompany";
 
             /// <summary>
             /// 邮箱
             /// </summary>
-            public string email { get; set; } = "myEmail";
+            [JsonPropertyName("email")]
+            public string Email { get; set; } = "myEmail";
 
             /// <summary>
             /// 学校
             /// </summary>
-            public string collage { get; set; } = "myCollage";
+            [JsonPropertyName("collage")]
+            public string Collage { get; set; } = "myCollage";
 
             /// <summary>
             /// 个人说明
             /// </summary>
-            public string personal_note { get; set; } = "myNote";
+            [JsonPropertyName("personal_note")]
+            public string PersonalNote { get; set; } = "myNote";
         }
 
+        /// <summary>
+        /// 用于表示设备类型的相关类。
+        /// </summary>
+        [Serializable]
         public class PhoneTypeInfo
         {
-            public Variants[] variants { get; set; } = Array.Empty<Variants>();
+            [JsonPropertyName("variants")]
+            public Variants[] VariantsArray { get; set; } = Array.Empty<Variants>();
         }
 
+        /// <summary>
+        /// 设备类型具体内容类。
+        /// </summary>
+        [Serializable]
         public class Variants
         {
             /// <summary>
             /// 机型名称
             /// </summary>
-            public string model_show { get; set; } = "model_show";
+            [JsonPropertyName("model_show")]
+            public string ModelShow { get; set; } = "model_show";
             /// <summary>
             /// 是否需要付费
             /// </summary>
-            public bool need_pay { get; set; } = true;
+            [JsonPropertyName("need_pay")]
+            public bool NeedPay { get; set; } = true;
         }
 
+        /// <summary>
+        /// 用于表示在线设备的相关类。
+        /// </summary>
+        [Serializable]
         public class ClientsInfo
         {
-            public Device[] clients { get; set; } = Array.Empty<Device>();
+            [JsonPropertyName("clients")]
+            public Device[] Clients { get; set; } = Array.Empty<Device>();
         }
 
+        /// <summary>
+        /// 设备类型内容具体内容类。
+        /// </summary>
+        [Serializable]
         public class Device
         {
             /// <summary>
             /// 客户端ID
             /// </summary>
-            public long app_id { get; set; } = 1919810;
+            [JsonPropertyName("app_id")]
+            public long AppId { get; set; } = 1919810;
             /// <summary>
             /// 设备名称
             /// </summary>
-            public string device_name = "Homoの手机";
+            [JsonPropertyName("device_name")]
+            public string DeviceName { get; set; } = "Homoの手机";
             /// <summary>
             /// 设备类型
             /// </summary>
-            private string device_kind = "哼哼哼";
+            [JsonPropertyName("device_kind")]
+            public string DeviceKind { get; set; } = "哼哼哼";
         }
 
-        internal class CacheSettings
+        /// <summary>
+        /// 缓存信息的设置类。
+        /// </summary>
+        [Serializable]
+        public class CacheSettings
         {
-            public bool no_cache { get; set; } = false;
+            /// <summary>
+            /// 是否不使用缓存。
+            /// </summary>
+            [JsonPropertyName("no_cache")]
+            public bool NoCache { get; set; } = false;
         }
     }
 }

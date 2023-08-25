@@ -14,6 +14,26 @@ namespace MethodBox.SimpleCqSDK.Helpers
         /// </summary>
         /// <param name="url">请求后台地址</param>
         /// <returns></returns>
+        public static string Post(string url)
+        {
+            string result = "";
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+            req.Method = "POST";
+            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+            Stream stream = resp.GetResponseStream();
+            //获取内容
+            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+            {
+                result = reader.ReadToEnd();
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 指定Post地址使用Get 方式获取全部字符串
+        /// </summary>
+        /// <param name="url">请求后台地址</param>
+        /// <returns></returns>
         public static string Post(string url, Dictionary<string, string> dic)
         {
             string result = "";

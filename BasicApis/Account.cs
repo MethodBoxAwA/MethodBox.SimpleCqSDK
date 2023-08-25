@@ -1,5 +1,7 @@
-﻿using System.Reflection;
+﻿using System.Net;
+using System.Reflection;
 using System.Text.Json;
+using MethodBox.SimpleCqSDK.Utils;
 using static MethodBox.SimpleCqSDK.Utils.AccountJson;
 
 namespace MethodBox.SimpleCqSDK.BasicApis
@@ -15,13 +17,14 @@ namespace MethodBox.SimpleCqSDK.BasicApis
 #if NET6_0_OR_GREATER
             ArgumentNullException.ThrowIfNull(ipAddress);
 #endif
+            ServicePointManager.SecurityProtocol =
+                (SecurityProtocolType)192 | (SecurityProtocolType)768 | (SecurityProtocolType)3072;
             var uri = $"{ipAddress}/get_login_info";
-            var result = Helpers.HttpHelper.Post(uri,new Dictionary<string, string>());
-            var jsonInstance = System.Text.Json.JsonSerializer.Deserialize<Utils.BasicJson>
+            var result = Helpers.HttpHelper.Post(uri);
+            var jsonInstance = JsonSerializer.Deserialize<Utils.BasicJson>
                 (result)??throw new Framework.Exceptions.DataEmptyException("返回数据为空");
-            
-            return (((UserInfo)jsonInstance.data).user_id, 
-                ((UserInfo)jsonInstance.data).nickname);
+            var preData = ((JsonElement)jsonInstance.Data).Deserialize<AccountJson.UserInfo>();
+            return (preData.UserId, preData.NickName);
         }
 
         /// <summary>
@@ -37,7 +40,7 @@ namespace MethodBox.SimpleCqSDK.BasicApis
             ArgumentNullException.ThrowIfNull(profile);
 #endif
             var uri = $"{ipAddress}/set_qq_profile";
-            var jsonInstance = System.Text.Json.JsonSerializer.Serialize(profile);
+            var jsonInstance = JsonSerializer.Serialize(profile);
             Helpers.HttpHelper.Post(jsonInstance, uri);
         }
 
@@ -48,7 +51,7 @@ namespace MethodBox.SimpleCqSDK.BasicApis
         /// <param name="ipAddress"></param>
         /// <param name="model">机型名称</param>
         /// <returns>一个列表，其中每一项都是一个元组，其中分别为机型名称和和是否需付费信息。</returns>
-        public static List<(string, bool)> GetModelShow(string ipAddress, string model)
+        public static List<(string, bool)>? GetModelShow(string ipAddress, string model)
         {
 #if NET6_0_OR_GREATER
             ArgumentNullException.ThrowIfNull(ipAddress);
@@ -58,12 +61,13 @@ namespace MethodBox.SimpleCqSDK.BasicApis
             var postDictionary = new Dictionary<string, string>
                 { { "model", model } };
             var result = Helpers.HttpHelper.Post(uri, postDictionary);
-            var jsonInstance = System.Text.Json.JsonSerializer.Deserialize<Utils.BasicJson>
+            var jsonInstance = JsonSerializer.Deserialize<Utils.BasicJson>
                 (result)??throw new Framework.Exceptions.DataEmptyException("返回数据为空");
-            var variants = ((PhoneTypeInfo)jsonInstance.data).variants;
+            var variants = ((JsonElement)jsonInstance.Data).
+                Deserialize<PhoneTypeInfo>()?.VariantsArray;
 
-            return variants.Select(
-                tuple => (tuple.model_show, tuple.need_pay)).ToList();
+            return variants?.Select(
+                tuple => (tuple.ModelShow, tuple.NeedPay)).ToList();
         }
 
         /// <summary>
@@ -93,7 +97,7 @@ namespace MethodBox.SimpleCqSDK.BasicApis
         /// <param name="ipAddress"></param>
         /// <param name="noCache">是否无视缓存（默认为否）</param>
         /// <returns>在线客户端列表。</returns>
-        public static Device[] GetOnlineClients(string ipAddress, bool noCache = false)
+        public static Device[]? GetOnlineClients(string ipAddress, bool noCache = false)
         {
 #if NET6_0_OR_GREATER
             ArgumentNullException.ThrowIfNull(ipAddress);
@@ -101,13 +105,14 @@ namespace MethodBox.SimpleCqSDK.BasicApis
             var uri = $"{ipAddress}/get_online_clients";
             CacheSettings settings = new()
             {
-                no_cache = noCache
+                NoCache = noCache
             };
             var result = Helpers.HttpHelper.Post(JsonSerializer.Serialize(settings),uri);
             var jsonInstance = System.Text.Json.JsonSerializer.Deserialize<Utils.BasicJson>
                 (result)??throw new Framework.Exceptions.DataEmptyException("返回数据为空");
             
-            return ((ClientsInfo)jsonInstance.data).clients;
+            return ((JsonElement)jsonInstance.Data).Deserialize<ClientsInfo>()?.Clients;
         }
     }
+
 }
